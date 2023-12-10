@@ -1,4 +1,4 @@
-package org.mathhelper;
+package org.mathhelper.repositories;
 
 import org.mathhelper.model.Equation;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +16,6 @@ public interface EquationRepository extends JpaRepository<Equation, Long> {
 
     @Query("from Equation e where size(e.solutions) <= :number")
     List<Equation> findWithLessOrEqualSolutionsThan(@Param("number") int solutionsNumber);
-
 
     List<Equation> findAllBySolutionsContaining(Double solution);
 }

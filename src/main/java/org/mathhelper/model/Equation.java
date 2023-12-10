@@ -1,29 +1,38 @@
 package org.mathhelper.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
-@Builder
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor
 public class Equation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    @NotNull
+    @org.mathhelper.validation.equation.Equation
+    @NonNull
+    @Setter(AccessLevel.NONE)
     private String equation;
 
     @ElementCollection
     private List<Double> solutions;
+
+//    @ElementCollection
+//    @Setter(AccessLevel.NONE)
+//    private Map<Integer, Integer> powersAndCoefficients;
 
     @Override
     public final boolean equals(Object o) {
