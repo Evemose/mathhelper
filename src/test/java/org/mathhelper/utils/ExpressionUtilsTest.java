@@ -1,10 +1,10 @@
 package org.mathhelper.utils;
 
-import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mathhelper.utils.ExpressionUtils.Operation;
+import org.mathhelper.utils.expressions.ExpressionUtils;
+import org.mathhelper.utils.expressions.Operation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mathhelper.utils.ExpressionUtils.Operation.Operator.*;
+import static org.mathhelper.utils.expressions.Operation.Operator.*;
 
 public class ExpressionUtilsTest {
 
@@ -60,18 +60,18 @@ public class ExpressionUtilsTest {
         var coefficients = new HashMap<Integer, Double>();
         coefficients.put(1, 2.0);
         coefficients.put(0, 3.0);
-        var operator = new ExpressionUtils.Operation(coefficients,
-                ExpressionUtils.Operation.Operator.ADDITION,
+        var operator = new Operation(coefficients,
+                Operation.Operator.ADDITION,
                 null);
 
-        var operations = new PriorityQueue<ExpressionUtils.Operation>();
+        var operations = new PriorityQueue<Operation>();
         operations.add(operator);
 
         ExpressionUtils.collapseOperations(operations);
 
         assertEquals(1, operations.size());
         var result = operations.peek();
-        assertEquals(ExpressionUtils.Operation.Operator.ADDITION, result.getOperator());
+        assertEquals(Operation.Operator.ADDITION, result.getOperator());
         assertEquals(coefficients, result.getCoefficients());
         assertEquals(null, result.getLeftOperation());
     }

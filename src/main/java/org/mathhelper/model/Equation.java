@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import org.mathhelper.model.validation.equation.EquationConstraint;
-import org.mathhelper.utils.ExpressionUtils;
+import org.mathhelper.utils.expressions.ExpressionUtils;
 
 import java.util.*;
 

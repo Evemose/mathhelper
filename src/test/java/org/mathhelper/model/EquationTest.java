@@ -3,12 +3,9 @@ package org.mathhelper.model;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mathhelper.model.Equation;
 import org.junit.jupiter.api.Assertions;
-import org.mathhelper.utils.ExpressionUtils;
+import org.mathhelper.utils.expressions.Operation;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,10 +43,10 @@ public class EquationTest {
             "DIVISION, SUBTRACTION, 1",
     })
     public void testCompareToWithDifferentOperators(String operator1, String operator2, int expected) {
-        var op1 = new ExpressionUtils.Operation(Map.of(0, 12.d),
-                ExpressionUtils.Operation.Operator.valueOf(operator1), null);
-        var op2 = new ExpressionUtils.Operation(Map.of(0, 12.d),
-                ExpressionUtils.Operation.Operator.valueOf(operator2), null);
+        var op1 = new Operation(Map.of(0, 12.d),
+                Operation.Operator.valueOf(operator1), null);
+        var op2 = new Operation(Map.of(0, 12.d),
+                Operation.Operator.valueOf(operator2), null);
         assertEquals(expected, op1.compareTo(op2));
     }
 }
