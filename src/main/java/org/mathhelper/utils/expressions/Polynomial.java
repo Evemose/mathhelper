@@ -1,10 +1,13 @@
 package org.mathhelper.utils.expressions;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BinaryOperator;
 
 @Data
 @Builder
@@ -26,7 +29,15 @@ public class Polynomial implements Cloneable {
         this.denominatorCoefficients = denominatorCoefficients;
     }
 
-    public void add(Polynomial polynomial) {
+    public void add(@NotNull Polynomial polynomial) {
+        applyBinaryOperator(polynomial, Double::sum);
+    }
+
+    public void subtract(@NotNull Polynomial polynomial) {
+        applyBinaryOperator(polynomial, (a, b) -> a - b);
+    }
+
+    private void applyBinaryOperator(Polynomial polynomial, BinaryOperator<Double> binaryOperator) {
         var polynomialCopy = polynomial.clone();
         if (!denominatorCoefficients.equals(polynomial.denominatorCoefficients)) {
             var commonDenominator = new Polynomial(new HashMap<>(this.denominatorCoefficients));
@@ -37,15 +48,15 @@ public class Polynomial implements Cloneable {
             denominatorCoefficients = commonDenominator.numeratorCoefficients;
         }
         for (var entry : polynomialCopy.numeratorCoefficients.entrySet()) {
-            numeratorCoefficients.merge(entry.getKey(), entry.getValue(), Double::sum);
+            if (numeratorCoefficients.containsKey(entry.getKey())) {
+                numeratorCoefficients.merge(entry.getKey(), entry.getValue(), binaryOperator);
+            } else {
+                numeratorCoefficients.put(entry.getKey(), binaryOperator.apply(0.d, entry.getValue()));
+            }
         }
     }
 
-    public void subtract(Polynomial polynomial) {
-
-    }
-
-    public void multiply(Map<Integer, Double> coefficients) {
+    public void multiply(@NotEmpty @NotNull Map<Integer, Double> coefficients) {
         var backupMap = new HashMap<>(numeratorCoefficients);
         numeratorCoefficients.clear();
         for (var entry : backupMap.entrySet()) {
@@ -57,7 +68,7 @@ public class Polynomial implements Cloneable {
         }
     }
 
-    public void multiply(Polynomial polynomial) {
+    public void multiply(@NotNull Polynomial polynomial) {
 
     }
 

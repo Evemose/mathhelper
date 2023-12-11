@@ -1,4 +1,4 @@
-package org.mathhelper.utils;
+package org.mathhelper.utils.expressions;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
