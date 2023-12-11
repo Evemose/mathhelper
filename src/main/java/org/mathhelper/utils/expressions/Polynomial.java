@@ -25,8 +25,8 @@ public class Polynomial implements Cloneable {
     }
 
     public Polynomial(Map<Integer, Double> numeratorCoefficients, Map<Integer, Double> denominatorCoefficients) {
-        this.numeratorCoefficients = numeratorCoefficients;
-        this.denominatorCoefficients = denominatorCoefficients;
+        setNumeratorCoefficients(numeratorCoefficients);
+        setDenominatorCoefficients(denominatorCoefficients);
     }
 
     public void add(Polynomial polynomial) {
@@ -71,6 +71,31 @@ public class Polynomial implements Cloneable {
     public void multiply(Polynomial polynomial) {
         multiply(polynomial.numeratorCoefficients);
         multiplyDenominator(polynomial);
+    }
+
+    public void setDenominatorCoefficients(Map<Integer, Double> denominatorCoefficients) {
+        if (denominatorCoefficients.isEmpty()) {
+            throw new IllegalArgumentException("Denominator cannot be empty");
+        }
+        if (denominatorCoefficients.get(0) == 0 && denominatorCoefficients.size() == 1) {
+            throw new IllegalArgumentException("Denominator cant be zero");
+        }
+        this.denominatorCoefficients = denominatorCoefficients;
+    }
+
+    public void setNumeratorCoefficients(Map<Integer, Double> numeratorCoefficients) {
+        if (numeratorCoefficients.isEmpty()) {
+            throw new IllegalArgumentException("Numerator cannot be empty");
+        }
+        this.numeratorCoefficients = numeratorCoefficients;
+    }
+
+    public void divide(Polynomial polynomial) {
+        if (polynomial.numeratorCoefficients.isEmpty() ||
+                polynomial.numeratorCoefficients.get(0) == 0 && polynomial.numeratorCoefficients.size() == 1) {
+            throw new IllegalArgumentException("Cannot divide by zero");
+        }
+        multiply(new Polynomial(polynomial.denominatorCoefficients, polynomial.numeratorCoefficients));
     }
 
     private void multiplyDenominator(Polynomial polynomial) {

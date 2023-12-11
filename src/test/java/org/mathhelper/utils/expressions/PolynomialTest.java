@@ -125,4 +125,20 @@ public class PolynomialTest {
         poly1.multiply(coefs2);
         assertThat(poly1.getNumeratorCoefficients()).containsExactlyInAnyOrderEntriesOf(numeratorCoefficients1);
     }
+
+    @Test
+    void test_Divide() {
+        var polynomial1 = new Polynomial(new HashMap<>(Map.of(1, 6.d, 2, 8.d)),
+                new HashMap<>(Map.of(1, -2.d, 4, 3.d)));
+
+        var polynomial2 = new Polynomial(new HashMap<>(Map.of(1, 3.d, 2, 4.d)),
+                new HashMap<>(Map.of(1, 3.d, 0, -5.d)));
+
+        polynomial1.divide(polynomial2);
+
+        assertThat(polynomial1.getNumeratorCoefficients())
+                .containsExactlyInAnyOrderEntriesOf(Map.of(3, 24d, 2, -22d, 1, -30d));
+        assertThat(polynomial1.getDenominatorCoefficients())
+                .containsExactlyInAnyOrderEntriesOf(Map.of(6, 12d, 5, 9d, 2, -6d, 3, -8d));
+    }
 }
