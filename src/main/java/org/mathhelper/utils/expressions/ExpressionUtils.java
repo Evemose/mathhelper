@@ -1,9 +1,7 @@
 package org.mathhelper.utils.expressions;
 
-import lombok.*;
 import lombok.experimental.UtilityClass;
 import org.mathhelper.model.validation.expression.Expression;
-import org.mathhelper.utils.expressions.Operation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,42 +21,15 @@ public class ExpressionUtils {
         while (operations.size() > 1) {
             var operation = operations.poll();
             var leftOperation = operation.getLeftOperation();
-            var leftOperationCoefficients = leftOperation.getCoefficients();
-            var operationCoefficients = operation.getCoefficients();
+            var leftOperationPolynomial = leftOperation.getPolynomial();
+            var operationPolynomial = operation.getPolynomial();
             var operationOperator = operation.getOperator();
-            var binaryOperator = operationOperator.getBinaryOperator();
             switch (operationOperator) {
-                case DIVISION -> {
-                    var backupMap = new HashMap<>(leftOperationCoefficients);
-                    leftOperationCoefficients.clear();
-                    for (var leftEntry : backupMap.entrySet()) {
-                        for (var entry : operationCoefficients.entrySet()) {
-                            leftOperationCoefficients.merge(
-                                    leftEntry.getKey() - entry.getKey(),
-                                    leftEntry.getValue() / entry.getValue(), Double::sum);
-                        }
-                    }
-                }
-                case MULTIPLICATION -> {
-                    var backupMap = new HashMap<>(leftOperationCoefficients);
-                    leftOperationCoefficients.clear();
-                    for (var leftEntry : backupMap.entrySet()) {
-                        for (var entry : operationCoefficients.entrySet()) {
-                            leftOperationCoefficients.merge(
-                                    leftEntry.getKey() + entry.getKey(),
-                                    entry.getValue() * leftEntry.getValue(), Double::sum);
-                        }
-                    }
-                }
-                default -> {
-                    for (var entry : operationCoefficients.entrySet()) {
-                        if (leftOperationCoefficients.containsKey(entry.getKey())) {
-                            leftOperationCoefficients.merge(entry.getKey(), entry.getValue(), binaryOperator);
-                        } else {
-                            leftOperationCoefficients.put(entry.getKey(), binaryOperator.apply(0.d, entry.getValue()));
-                        }
-                    }
-                }
+                case DIVISION -> leftOperationPolynomial.divide(operationPolynomial);
+                case MULTIPLICATION -> leftOperationPolynomial.multiply(operationPolynomial);
+                case ADDITION -> leftOperationPolynomial.add(operationPolynomial);
+                case SUBTRACTION -> leftOperationPolynomial.subtract(operationPolynomial);
+                default -> throw new IllegalStateException("Unexpected value: " + operationOperator);
             }
             leftOperation.setRightOperation(operation.getRightOperation());
         }
@@ -72,7 +43,7 @@ public class ExpressionUtils {
         while (matcher.find()) {
             var group = matcher.group();
             var operator = matcher.start() == 0 ? Operation.Operator.NONE : Operation.Operator.toOperator(group.charAt(0));
-            var operation = new Operation(Map.of(), operator, previousOperation);
+            var operation = new Operation(new Polynomial(), operator, previousOperation);
             var coefficients = new HashMap<Integer, Double>();
             var c = group.charAt(1);
             if (c == '(') {
@@ -93,7 +64,7 @@ public class ExpressionUtils {
                     coefficients.merge(0, coefficient, Double::sum);
                 }
             }
-            operation.setCoefficients(coefficients);
+            operation.getPolynomial().setNumeratorCoefficients(coefficients);
             operation.setLeftOperation(previousOperation);
             operations.add(previousOperation);
         }

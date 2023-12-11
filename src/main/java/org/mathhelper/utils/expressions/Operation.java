@@ -12,10 +12,9 @@ import java.util.function.BinaryOperator;
 @AllArgsConstructor
 public class Operation implements Comparable<Operation> {
 
-    @NotEmpty
     @NonNull
-    private Map<Integer, Double> coefficients;
-    @NotNull
+    private final Polynomial polynomial;
+
     @NonNull
     private Operator operator;
 
@@ -25,10 +24,10 @@ public class Operation implements Comparable<Operation> {
     @ToString.Exclude
     private Operation rightOperation;
 
-    public Operation(@NonNull Map<Integer, Double> coefficients,
+    public Operation(@NonNull Polynomial polynomial,
                      @NonNull Operator operator,
                      @Nullable Operation leftOperation) {
-        this.coefficients = coefficients;
+        this.polynomial = polynomial;
         this.operator = operator;
         this.leftOperation = leftOperation;
     }
@@ -49,19 +48,16 @@ public class Operation implements Comparable<Operation> {
 
     @Getter
     public enum Operator {
-        NONE(3, null),
-        ADDITION(2, Double::sum),
-        SUBTRACTION(1, (a, b) -> a - b),
-        MULTIPLICATION(0, (a, b) -> a * b),
-        DIVISION(-1, (a, b) -> a / b);
+        NONE(3),
+        ADDITION(2),
+        SUBTRACTION(1),
+        MULTIPLICATION(0),
+        DIVISION(-1);
 
         private final int priority;
 
-        private final BinaryOperator<Double> binaryOperator;
-
-        Operator(int priority, BinaryOperator<Double> binaryOperator) {
+        Operator(int priority) {
             this.priority = priority;
-            this.binaryOperator = binaryOperator;
         }
 
         public static Operator toOperator(char c) {
