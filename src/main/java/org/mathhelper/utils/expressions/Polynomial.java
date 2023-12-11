@@ -29,11 +29,11 @@ public class Polynomial implements Cloneable {
         this.denominatorCoefficients = denominatorCoefficients;
     }
 
-    public void add(@NotNull Polynomial polynomial) {
+    public void add(Polynomial polynomial) {
         applyBinaryOperator(polynomial, Double::sum);
     }
 
-    public void subtract(@NotNull Polynomial polynomial) {
+    public void subtract(Polynomial polynomial) {
         applyBinaryOperator(polynomial, (a, b) -> a - b);
     }
 
@@ -56,7 +56,7 @@ public class Polynomial implements Cloneable {
         }
     }
 
-    public void multiply(@NotEmpty @NotNull Map<Integer, Double> coefficients) {
+    public void multiply(Map<Integer, Double> coefficients) {
         var backupMap = new HashMap<>(numeratorCoefficients);
         numeratorCoefficients.clear();
         for (var entry : backupMap.entrySet()) {
@@ -68,8 +68,15 @@ public class Polynomial implements Cloneable {
         }
     }
 
-    public void multiply(@NotNull Polynomial polynomial) {
+    public void multiply(Polynomial polynomial) {
+        multiply(polynomial.numeratorCoefficients);
+        multiplyDenominator(polynomial);
+    }
 
+    private void multiplyDenominator(Polynomial polynomial) {
+        var denominatorPolynomial = new Polynomial(new HashMap<>(denominatorCoefficients));
+        denominatorPolynomial.multiply(polynomial.denominatorCoefficients);
+        denominatorCoefficients = denominatorPolynomial.numeratorCoefficients;
     }
 
 
