@@ -46,8 +46,10 @@ public class EquationTest {
             "DIVISION, SUBTRACTION, 1",
     })
     public void testCompareToWithDifferentOperators(String operator1, String operator2, int expected) {
-        var op1 = new ExpressionUtils.Operation(Map.of(0, 12.d), ExpressionUtils.Operation.Operator.valueOf(operator1));
-        var op2 = new ExpressionUtils.Operation(Map.of(0, 12.d), ExpressionUtils.Operation.Operator.valueOf(operator2));
+        var op1 = new ExpressionUtils.Operation(Map.of(0, 12.d),
+                ExpressionUtils.Operation.Operator.valueOf(operator1), null);
+        var op2 = new ExpressionUtils.Operation(Map.of(0, 12.d),
+                ExpressionUtils.Operation.Operator.valueOf(operator2), null);
         assertEquals(expected, op1.compareTo(op2));
     }
 }
