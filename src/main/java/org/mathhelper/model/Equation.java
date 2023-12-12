@@ -5,7 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import org.mathhelper.model.validation.equation.EquationConstraint;
-import org.mathhelper.utils.ExpressionUtils;
+import org.mathhelper.utils.expressions.ExpressionUtils;
+import org.mathhelper.utils.expressions.Polynomial;
 
 import java.util.*;
 
@@ -29,42 +30,36 @@ public class Equation {
     @ElementCollection
     private List<Double> solutions;
 
-    @Column(nullable = false)
-    @Setter(AccessLevel.NONE)
+    @Embedded
     @NonNull
     @NotNull
-    private Double coefficient;
-
-    @Column(nullable = false)
-    @Setter(AccessLevel.NONE)
-    @NonNull
-    @NotNull
-    private Double constant;
+    private Polynomial polynomialOfEquation;
 
     @lombok.Builder(builderClassName = "Builder")
-    protected Equation(@NonNull String equation, @NonNull Double coefficient, @NonNull Double constant) {
+    protected Equation(@NonNull String equation, @NonNull Polynomial polynomialOfEquation) {
         this.equation = equation;
-        this.coefficient = coefficient;
-        this.constant = constant;
+        this.polynomialOfEquation = polynomialOfEquation;
     }
 
     public static class Builder {
+
+        @Getter
         private String equation;
-        private Double coefficient;
-        private Double constant;
+
+        @Getter
+        private Polynomial polynomialOfEquation;
+
 
         public Builder equation(String equation) {
             this.equation = equation;
-            var parsedEquation = parseEquation(equation);
-            this.coefficient = parsedEquation.get(1);
-            this.constant = parsedEquation.get(0);
+            this.polynomialOfEquation = parseEquation(equation);
             return this;
         }
 
-        private @NonNull Map<Integer, Double> parseEquation(String equation) {
+        private @NonNull Polynomial parseEquation(String equation) {
             equation = equation.replaceAll(" ", "");
             var expression = moveAllToTheLeft(equation);
-            return ExpressionUtils.evaluateExpression(expression);
+            return ExpressionUtils.parseExpression(expression);
         }
 
 
@@ -76,7 +71,7 @@ public class Equation {
 
 
         public Equation build() {
-            return new Equation(equation, coefficient, constant);
+            return new Equation(equation, polynomialOfEquation);
         }
     }
 
