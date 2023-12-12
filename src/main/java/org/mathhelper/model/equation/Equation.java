@@ -1,4 +1,4 @@
-package org.mathhelper.model;
+package org.mathhelper.model.equation;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -20,59 +20,25 @@ public class Equation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name="equation")
     @NotNull
     @EquationConstraint
     @NonNull
     @Setter(AccessLevel.NONE)
-    private String equation;
+    private String equationString;
 
     @ElementCollection
-    private List<Double> solutions;
+    private final List<Double> solutions = new ArrayList<>();
 
     @Embedded
     @NonNull
     @NotNull
+    @Setter(AccessLevel.NONE)
     private Polynomial polynomialOfEquation;
 
-    @lombok.Builder(builderClassName = "Builder")
-    protected Equation(@NonNull String equation, @NonNull Polynomial polynomialOfEquation) {
-        this.equation = equation;
-        this.polynomialOfEquation = polynomialOfEquation;
-    }
-
-    public static class Builder {
-
-        @Getter
-        private String equation;
-
-        @Getter
-        private Polynomial polynomialOfEquation;
-
-
-        public Builder equation(String equation) {
-            this.equation = equation;
-            this.polynomialOfEquation = parseEquation(equation);
-            return this;
-        }
-
-        private @NonNull Polynomial parseEquation(String equation) {
-            equation = equation.replaceAll(" ", "");
-            var expression = moveAllToTheLeft(equation);
-            return ExpressionUtils.parseExpression(expression);
-        }
-
-
-        private String moveAllToTheLeft(String equation) {
-            var sides = equation.split("=");
-            return sides[0] + "-(" + sides[1] + ")";
-        }
-
-
-
-        public Equation build() {
-            return new Equation(equation, polynomialOfEquation);
-        }
+    Equation(@NonNull String equationString, @NonNull Polynomial polynomial) {
+        this.equationString = equationString;
+        this.polynomialOfEquation = polynomial;
     }
 
     @Override

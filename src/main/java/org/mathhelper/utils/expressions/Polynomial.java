@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.HashMap;
@@ -91,22 +92,19 @@ public class Polynomial implements Cloneable {
         if (denominatorCoefficients.isEmpty()) {
             throw new IllegalArgumentException("Denominator cannot be empty");
         }
-        if (denominatorCoefficients.get(0) == 0 && denominatorCoefficients.size() == 1) {
+        if (denominatorCoefficients.get(0) != null && denominatorCoefficients.get(0) == 0 && denominatorCoefficients.size() == 1) {
             throw new IllegalArgumentException("Denominator cant be zero");
         }
         this.denominatorCoefficients = denominatorCoefficients;
     }
 
     public void setNumeratorCoefficients(@NonNull Map<Integer, Double> numeratorCoefficients) {
-        if (numeratorCoefficients.isEmpty()) {
-            throw new IllegalArgumentException("Numerator cannot be empty");
-        }
         this.numeratorCoefficients = numeratorCoefficients;
     }
 
     public void divide(@NonNull Polynomial polynomial) {
         if (polynomial.numeratorCoefficients.isEmpty() ||
-                polynomial.numeratorCoefficients.get(0) == 0 && polynomial.numeratorCoefficients.size() == 1) {
+                polynomial.numeratorCoefficients.get(0) != null && polynomial.numeratorCoefficients.get(0) == 0 && polynomial.numeratorCoefficients.size() == 1) {
             throw new IllegalArgumentException("Cannot divide by zero");
         }
         multiply(new Polynomial(polynomial.denominatorCoefficients, polynomial.numeratorCoefficients));

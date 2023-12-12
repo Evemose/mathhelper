@@ -3,19 +3,21 @@ package org.mathhelper.utils.expressions;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.mathhelper.model.validation.expression.Expression;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
-@UtilityClass
+@Component
 public class ExpressionUtils {
 
-    public static Polynomial parseExpression(@Expression String expression) {
+    public Polynomial parseExpression(@Expression String expression) {
+        expression = expression.replaceAll(" ", "");
         var operations = initializeOperations(expression);
         return Objects.requireNonNull(collapseOperations(operations));
     }
 
-    public static Polynomial collapseOperations(Collection<Operation> operationCollection) {
+    public Polynomial collapseOperations(Collection<Operation> operationCollection) {
         var operations = new PriorityQueue<>(operationCollection.size(), getOperationsInexpressionComparator());
         operations.addAll(operationCollection);
         while (operations.size() > 1) {
@@ -36,7 +38,7 @@ public class ExpressionUtils {
         return Objects.requireNonNull(operations.poll()).getPolynomial();
     }
 
-    public static PriorityQueue<Operation> initializeOperations(String expression) {
+    private PriorityQueue<Operation> initializeOperations(String expression) {
         expression = '+' + expression;
         var operations = new PriorityQueue<>(getOperationsInexpressionComparator());
         final var pattern = "[-+*/]-?(\\(+-?((\\d+(\\.\\d+)?)|x)((([-+*/]-?((\\d+(\\.\\d+)?)|x))\\)*)*\\)+)|((\\d+(\\.\\d+)?)|x))";
@@ -61,7 +63,7 @@ public class ExpressionUtils {
                     var coefficient = group.length() > 2 ? -1d : 1;
                     coefficients.put(1, coefficient);
                 } else {
-                    var coefficient = Double.parseDouble(group.substring(matcher.start() == 0 ? 0 : 1));
+                    var coefficient = Double.parseDouble(group.substring(1));
                     coefficients.merge(0, coefficient, Double::sum);
                 }
                 operationBuilder.polynomial(new Polynomial(coefficients));
@@ -74,7 +76,7 @@ public class ExpressionUtils {
     }
 
     @NonNull
-    private static Comparator<Operation> getOperationsInexpressionComparator() {
+    private Comparator<Operation> getOperationsInexpressionComparator() {
         return (o1, o2) -> {
             var o1OperatorPriority = switch (o1.getOperator()) {
                 case NONE -> 3;
@@ -94,7 +96,7 @@ public class ExpressionUtils {
         };
     }
 
-    private static int findClosingParenthesisIndex(String expression, int openingParenthesisIndex) {
+    private int findClosingParenthesisIndex(String expression, int openingParenthesisIndex) {
         var parenthesisCount = 1;
         for (var i = openingParenthesisIndex + 1; i < expression.length(); i++) {
             var c = expression.charAt(i);

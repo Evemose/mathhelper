@@ -19,16 +19,13 @@ public class Operation implements Comparable<Operation> {
     private Operator operator;
 
     @Nullable
+    @EqualsAndHashCode.Exclude
     private Operation leftOperation;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Operation rightOperation;
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Operation other)) return false;
-        return getPolynomial().equals(other.getPolynomial()) && getOperator().equals(other.getOperator());
-    }
 
     public Operation(@NonNull Polynomial polynomial,
                      @NonNull Operator operator,
