@@ -16,6 +16,6 @@ public class EquationService {
     }
 
     public boolean checkForX(Equation equation, double x) {
-        return equation.getCoefficient() * x + equation.getConstant() == 0;
+        throw new UnsupportedOperationException();
     }
 }

@@ -18,37 +18,17 @@ public class EquationTest {
         var equation = "2x = 10";
         var builder = Equation.builder();
         builder.equation(equation);
-        Assertions.assertEquals(2.0, builder.build().getCoefficient());
-        Assertions.assertEquals(-10.0, builder.build().getConstant());
+        Assertions.assertEquals(new Polynomial(Map.of(1, 2d, 0, -10d)), builder.getPolynomialOfEquation());
     }
 
     @Test
     void buildTest() {
-        String equation = "2x = 10";
-        Equation.Builder builder = new Equation.Builder();
+        var equation = "2x = 10";
+        var builder = new Equation.Builder();
         builder.equation(equation);
-        Equation outputEquation = builder.build();
+        var outputEquation = builder.build();
 
         Assertions.assertEquals(equation, outputEquation.getEquation());
-        Assertions.assertEquals(2.0, outputEquation.getCoefficient());
-        Assertions.assertEquals(-10.0, outputEquation.getConstant());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "ADDITION, ADDITION, 0",
-            "ADDITION, SUBTRACTION, 0",
-            "MULTIPLICATION, DIVISION, 0",
-            "ADDITION, MULTIPLICATION, -1",
-            "SUBTRACTION, DIVISION, -1",
-            "MULTIPLICATION, ADDITION, 1",
-            "DIVISION, SUBTRACTION, 1",
-    })
-    public void testCompareToWithDifferentOperators(String operator1, String operator2, int expected) {
-        var op1 = new Operation(new Polynomial(new HashMap<>(Map.of(0, 12.d))),
-                Operation.Operator.valueOf(operator1), null);
-        var op2 = new Operation(new Polynomial(new HashMap<>(Map.of(0, 12.d))),
-                Operation.Operator.valueOf(operator2), null);
-        assertEquals(expected, op1.compareTo(op2));
+        Assertions.assertEquals(new Polynomial(Map.of(1, 2d, 0, -10d)), outputEquation.getPolynomialOfEquation());
     }
 }

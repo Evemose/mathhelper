@@ -1,9 +1,12 @@
 package org.mathhelper.utils.expressions;
 
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,29 +14,34 @@ import java.util.function.BinaryOperator;
 
 @Data
 @Builder
+@Embeddable
 public class Polynomial implements Cloneable {
 
+    @ElementCollection
+    @NonNull
     private Map<Integer, Double> numeratorCoefficients;
+    @ElementCollection
+    @NonNull
     private Map<Integer, Double> denominatorCoefficients;
 
     public Polynomial() {
         this(new HashMap<>());
     }
 
-    public Polynomial(Map<Integer, Double> numeratorCoefficients) {
+    public Polynomial(@NonNull Map<Integer, Double> numeratorCoefficients) {
         this(numeratorCoefficients, new HashMap<>(Map.of(0, 1.d)));
     }
 
-    public Polynomial(Map<Integer, Double> numeratorCoefficients, Map<Integer, Double> denominatorCoefficients) {
+    public Polynomial(@NonNull Map<Integer, Double> numeratorCoefficients, @NonNull Map<Integer, Double> denominatorCoefficients) {
         setNumeratorCoefficients(numeratorCoefficients);
         setDenominatorCoefficients(denominatorCoefficients);
     }
 
-    public void add(Polynomial polynomial) {
+    public void add(@NonNull Polynomial polynomial) {
         applyBinaryOperator(polynomial, Double::sum);
     }
 
-    public void subtract(Polynomial polynomial) {
+    public void subtract(@NonNull Polynomial polynomial) {
         applyBinaryOperator(polynomial, (a, b) -> a - b);
     }
 
@@ -56,7 +64,7 @@ public class Polynomial implements Cloneable {
         }
     }
 
-    public void multiply(Map<Integer, Double> coefficients) {
+    public void multiply(@NonNull Map<Integer, Double> coefficients) {
         var backupMap = new HashMap<>(numeratorCoefficients);
         numeratorCoefficients.clear();
         for (var entry : backupMap.entrySet()) {
@@ -68,12 +76,18 @@ public class Polynomial implements Cloneable {
         }
     }
 
-    public void multiply(Polynomial polynomial) {
+    public void multiply(@NonNull Polynomial polynomial) {
         multiply(polynomial.numeratorCoefficients);
         multiplyDenominator(polynomial);
     }
 
-    public void setDenominatorCoefficients(Map<Integer, Double> denominatorCoefficients) {
+    public void multiply(double coefficient) {
+        for (var entry : numeratorCoefficients.entrySet()) {
+            entry.setValue(entry.getValue() * coefficient);
+        }
+    }
+
+    public void setDenominatorCoefficients(@NonNull Map<Integer, Double> denominatorCoefficients) {
         if (denominatorCoefficients.isEmpty()) {
             throw new IllegalArgumentException("Denominator cannot be empty");
         }
@@ -83,14 +97,14 @@ public class Polynomial implements Cloneable {
         this.denominatorCoefficients = denominatorCoefficients;
     }
 
-    public void setNumeratorCoefficients(Map<Integer, Double> numeratorCoefficients) {
+    public void setNumeratorCoefficients(@NonNull Map<Integer, Double> numeratorCoefficients) {
         if (numeratorCoefficients.isEmpty()) {
             throw new IllegalArgumentException("Numerator cannot be empty");
         }
         this.numeratorCoefficients = numeratorCoefficients;
     }
 
-    public void divide(Polynomial polynomial) {
+    public void divide(@NonNull Polynomial polynomial) {
         if (polynomial.numeratorCoefficients.isEmpty() ||
                 polynomial.numeratorCoefficients.get(0) == 0 && polynomial.numeratorCoefficients.size() == 1) {
             throw new IllegalArgumentException("Cannot divide by zero");
@@ -98,7 +112,7 @@ public class Polynomial implements Cloneable {
         multiply(new Polynomial(polynomial.denominatorCoefficients, polynomial.numeratorCoefficients));
     }
 
-    private void multiplyDenominator(Polynomial polynomial) {
+    private void multiplyDenominator(@NonNull Polynomial polynomial) {
         var denominatorPolynomial = new Polynomial(new HashMap<>(denominatorCoefficients));
         denominatorPolynomial.multiply(polynomial.denominatorCoefficients);
         denominatorCoefficients = denominatorPolynomial.numeratorCoefficients;
