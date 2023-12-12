@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.BinaryOperator;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class Operation implements Comparable<Operation> {
 
     @NonNull
@@ -24,12 +24,28 @@ public class Operation implements Comparable<Operation> {
     @ToString.Exclude
     private Operation rightOperation;
 
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Operation other)) return false;
+        return getPolynomial().equals(other.getPolynomial()) && getOperator().equals(other.getOperator());
+    }
+
     public Operation(@NonNull Polynomial polynomial,
                      @NonNull Operator operator,
                      @Nullable Operation leftOperation) {
         this.polynomial = polynomial;
         this.operator = operator;
-        this.leftOperation = leftOperation;
+        setLeftOperation(leftOperation);
+    }
+
+    public Operation(@NonNull Polynomial polynomial,
+                     @NonNull Operator operator,
+                     @Nullable Operation leftOperation,
+                     @Nullable Operation rightOperation) {
+        this.polynomial = polynomial;
+        this.operator = operator;
+        setLeftOperation(leftOperation);
+        setRightOperation(rightOperation);
     }
 
     public void setLeftOperation(@Nullable Operation leftOperation) {
@@ -50,9 +66,9 @@ public class Operation implements Comparable<Operation> {
     public enum Operator {
         NONE(3),
         ADDITION(2),
-        SUBTRACTION(1),
-        MULTIPLICATION(0),
-        DIVISION(-1);
+        SUBTRACTION(2),
+        MULTIPLICATION(1),
+        DIVISION(1);
 
         private final int priority;
 
@@ -74,7 +90,7 @@ public class Operation implements Comparable<Operation> {
 
     @Override
     public int compareTo(@NonNull Operation o) {
-        return operator.getPriority() - o.operator.getPriority();
+        return o.operator.getPriority() - operator.getPriority();
     }
 
 }

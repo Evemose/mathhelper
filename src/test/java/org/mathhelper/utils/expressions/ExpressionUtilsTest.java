@@ -3,12 +3,12 @@ package org.mathhelper.utils.expressions;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mathhelper.utils.expressions.Operation.Operator.*;
 
 public class ExpressionUtilsTest {
@@ -65,5 +65,29 @@ public class ExpressionUtilsTest {
         operations.add(operation4);
         operations.add(operation5);
         return operations;
+    }
+
+    @Test
+    public void testInitializeOperations() {
+        var expression = "5+3*-((8*x)/4)";
+        var operationsResult = ExpressionUtils.initializeOperations(expression);
+
+        assertNotNull(operationsResult);
+
+        var operation1 = new Operation(new Polynomial(new HashMap<>(Map.of(0, 5d))), NONE, null);
+        var operation2 = new Operation(new Polynomial(new HashMap<>(Map.of(0, 3d))), ADDITION, operation1);
+        var operation3 = new Operation(new Polynomial(new HashMap<>(Map.of(1, -8d)), new HashMap<>(Map.of(0, 4d))), MULTIPLICATION, operation2);
+        assertThat(operationsResult).containsExactlyInAnyOrderElementsOf(List.of(operation1, operation2, operation3));
+    }
+
+    @Test
+    public void testParseExpression() {
+        var expression = "5+3*-((8*x)/4)";
+        var operationsResult = ExpressionUtils.initializeOperations(expression);
+        var polynomial = ExpressionUtils.collapseOperations(operationsResult);
+        assertThat(polynomial.getNumeratorCoefficients())
+                .containsExactlyInAnyOrderEntriesOf(Map.of(0, 20d, 1, -24d));
+        assertThat(polynomial.getDenominatorCoefficients())
+                .containsExactlyInAnyOrderEntriesOf(Map.of(0, 4d));
     }
 }
