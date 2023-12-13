@@ -1,14 +1,17 @@
 package org.mathhelper.utils.expressions;
 
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.mathhelper.model.validation.expression.Expression;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
 @Component
+@Validated
 public class ExpressionUtils {
 
     public Polynomial parseExpression(@Expression String expression) {

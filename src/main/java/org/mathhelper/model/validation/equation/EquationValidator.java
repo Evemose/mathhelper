@@ -25,17 +25,7 @@ public class EquationValidator implements ConstraintValidator<EquationConstraint
                     .addConstraintViolation();
             return false;
         }
-        if (!expressionValidator.isValid(parts[0], context)) {
-            context.buildConstraintViolationWithTemplate("Left side of equation is invalid: " + parts[0])
-                    .addConstraintViolation();
-            return false;
-        }
-        if (!expressionValidator.isValid(parts[1], context)) {
-            context.buildConstraintViolationWithTemplate("Right side of equation is invalid: " + parts[1])
-                    .addConstraintViolation();
-            return false;
-        }
-        return true;
+        return expressionValidator.isValid(parts[0], context) && expressionValidator.isValid(parts[1], context);
     }
 
 }

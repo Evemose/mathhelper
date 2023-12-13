@@ -100,8 +100,8 @@ public class EquationConstraintValidatorTest {
         Mockito.verify(context, Mockito.times(2)).buildConstraintViolationWithTemplate(messageCaptor.capture());
         var messages = messageCaptor.getAllValues();
         assertThat(messages).containsExactlyInAnyOrder(
-                "Left side of equation is invalid: " + equation.replaceAll(" ", "").split("=")[0],
-                "Expression is not valid according to the pattern: " + equation.replaceAll(" ", "").split("=")[0]
+                "Expression is not valid according to the pattern: "
+                        + equation.replaceAll(" ", "").split("=")[0]
         );
     }
 
@@ -118,8 +118,8 @@ public class EquationConstraintValidatorTest {
         Mockito.verify(context, Mockito.times(2)).buildConstraintViolationWithTemplate(messageCaptor.capture());
         var messages = messageCaptor.getAllValues();
         assertThat(messages).containsExactlyInAnyOrder(
-                "Right side of equation is invalid: " + equation.replaceAll(" ", "").split("=")[1],
-                "Expression is not valid according to the pattern: " + equation.replaceAll(" ", "").split("=")[1]
+                "Expression is not valid according to the pattern: "
+                        + equation.replaceAll(" ", "").split("=")[1]
         );
     }
 

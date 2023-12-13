@@ -19,6 +19,10 @@ public class ValidationExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        if (e.getMostSpecificCause().getMessage().contains("already exists")
+                || e.getMostSpecificCause().getMessage().contains("уже существует")) {
+            return ResponseEntity.badRequest().body("Equation already exists");
+        }
         return ResponseEntity.badRequest().body(e.getMostSpecificCause().getMessage());
     }
 }

@@ -22,7 +22,7 @@ public class ExpressionValidator implements ConstraintValidator<Expression, Stri
             return false;
         }
         if (!isExpressionValid(value)) {
-            context.buildConstraintViolationWithTemplate("Expression is not valid according to the pattern: " + value)
+            context.buildConstraintViolationWithTemplate("Expression is not valid: " + value)
                     .addConstraintViolation();
             return false;
         }
