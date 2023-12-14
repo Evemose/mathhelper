@@ -44,8 +44,8 @@ public class EquationsServiceTest {
 
     @Test
     void checkForEqualX_EqualTest() {
-        var equation = equationFactory.createEquation("2*x-4=0");
-        assertTrue(equationsService.checkForX(equation, 2.0));
+        var equation = equationFactory.createEquation("2*x+3 = 4");
+        assertTrue(equationsService.checkForX(equation, 0.5));
     }
 
     @Test

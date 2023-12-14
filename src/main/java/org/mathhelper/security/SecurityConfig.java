@@ -19,6 +19,7 @@ public class SecurityConfig {
                     corsConfiguration.addAllowedOrigin("*");
                     corsConfiguration.addAllowedMethod("*");
                     corsConfiguration.addAllowedHeader("*");
+                    corsConfiguration.addExposedHeader("*");
                     return corsConfiguration;
                 }));
         return http.build();
