@@ -13,13 +13,12 @@ public class SecurityConfig {
     @Bean
     public DefaultSecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(httpRequest -> httpRequest.anyRequest().permitAll())
+                .authorizeHttpRequests(httpRequest -> httpRequest.anyRequest().permitAll())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
                     corsConfiguration.addAllowedOrigin("*");
                     corsConfiguration.addAllowedMethod("*");
                     corsConfiguration.addAllowedHeader("*");
-                    corsConfiguration.addExposedHeader("*");
                     return corsConfiguration;
                 }));
         return http.build();
