@@ -1,14 +1,11 @@
 package org.mathhelper.expressions;
 
 import org.junit.jupiter.api.Test;
-import org.mathhelper.expressions.Polynomial;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PolynomialTest {
 
@@ -21,15 +18,15 @@ public class PolynomialTest {
         var coefficients2 = new HashMap<Integer, Double>();
         coefficients2.put(3, 3.d);
         coefficients2.put(1, 2.d);
-        
+
         var poly1 = new Polynomial(coefficients1);
         var poly2 = new Polynomial(coefficients2);
-        
+
         poly1.add(poly2);
         assertThat(poly1.getNumeratorCoefficients())
                 .containsExactlyInAnyOrderEntriesOf(Map.of(3, 7.d, 2, 3.d, 1, 2.d));
     }
-    
+
     @Test
     void addPolynomials_DifferentDenominators() {
         var coefficients1 = new HashMap<Integer, Double>();

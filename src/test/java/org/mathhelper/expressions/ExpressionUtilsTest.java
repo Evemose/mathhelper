@@ -1,9 +1,6 @@
 package org.mathhelper.expressions;
 
 import org.junit.jupiter.api.Test;
-import org.mathhelper.expressions.ExpressionUtils;
-import org.mathhelper.expressions.Operation;
-import org.mathhelper.expressions.Polynomial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,7 +9,8 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mathhelper.expressions.Operation.Operator.*;
 
 @SpringBootTest
@@ -20,28 +18,6 @@ public class ExpressionUtilsTest {
 
     @Autowired
     private ExpressionUtils expressionUtils;
-
-    @Test
-    public void collapseOperationsTest_NoOperations() {
-        var operation = new Operation(new Polynomial(new HashMap<>(Map.of(1, 2.0))), NONE, null);
-
-        var operations = new PriorityQueue<Operation>();
-        operations.add(operation);
-
-        var result = expressionUtils.collapseOperations(operations);
-
-        assertEquals(2.0, result.getNumeratorCoefficients().get(1));
-    }
-
-    @Test
-    public void testCollapse_ComplexExpression() {
-        var resultantOperation = expressionUtils.collapseOperations(getComplexExpression());
-        assertNotNull(resultantOperation);
-        assertThat(resultantOperation.getNumeratorCoefficients()).containsExactlyInAnyOrderEntriesOf(
-               Map.of(0, -158.3, 1, -155.5, 2, 502d, 3, -224d));
-        assertThat(resultantOperation.getDenominatorCoefficients()).containsExactlyInAnyOrderEntriesOf(
-                Map.of(0, -5d, 1, 4d));
-    }
 
     private static PriorityQueue<Operation> getComplexExpression() {
         var operation1 = new Operation(new Polynomial(new HashMap<>(Map.of(1, 2.0, 0, -8.3))),
@@ -67,6 +43,28 @@ public class ExpressionUtilsTest {
         operations.add(operation4);
         operations.add(operation5);
         return operations;
+    }
+
+    @Test
+    public void collapseOperationsTest_NoOperations() {
+        var operation = new Operation(new Polynomial(new HashMap<>(Map.of(1, 2.0))), NONE, null);
+
+        var operations = new PriorityQueue<Operation>();
+        operations.add(operation);
+
+        var result = expressionUtils.collapseOperations(operations);
+
+        assertEquals(2.0, result.getNumeratorCoefficients().get(1));
+    }
+
+    @Test
+    public void testCollapse_ComplexExpression() {
+        var resultantOperation = expressionUtils.collapseOperations(getComplexExpression());
+        assertNotNull(resultantOperation);
+        assertThat(resultantOperation.getNumeratorCoefficients()).containsExactlyInAnyOrderEntriesOf(
+                Map.of(0, -158.3, 1, -155.5, 2, 502d, 3, -224d));
+        assertThat(resultantOperation.getDenominatorCoefficients()).containsExactlyInAnyOrderEntriesOf(
+                Map.of(0, -5d, 1, 4d));
     }
 
     @Test

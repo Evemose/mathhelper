@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mathhelper.equations.dtos.CreateEquationDTO;
 import org.mathhelper.equations.dtos.GetEquationDTO;
-import org.mathhelper.equations.persistence.model.Equation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -12,22 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class EquationsIntegrationTest {
 
+    private final String COMMON_PREFIX = "/equations";
     @Autowired
     private TestRestTemplate restTemplate;
-
-    private final String COMMON_PREFIX = "/equations";
 
     @Test
     public void testGetAllEquations() {
@@ -43,7 +37,7 @@ public class EquationsIntegrationTest {
 
     @Test
     public void testGetEquation_InvalidId() {
-        var responseEntity = restTemplate.getForEntity(COMMON_PREFIX+"/-1", String.class);
+        var responseEntity = restTemplate.getForEntity(COMMON_PREFIX + "/-1", String.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
@@ -88,7 +82,7 @@ public class EquationsIntegrationTest {
         assertThat(equation.solutions()).isEmpty();
 
         var responseEntity =
-                restTemplate.postForEntity(equationResponseEntity.getHeaders().getLocation()+"/solutions?x=5",
+                restTemplate.postForEntity(equationResponseEntity.getHeaders().getLocation() + "/solutions?x=5",
                         null, String.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
@@ -100,7 +94,7 @@ public class EquationsIntegrationTest {
         var equationResponseEntity = restTemplate.postForEntity(COMMON_PREFIX, createEquationDTO, String.class);
         assertEquals(HttpStatus.CREATED, equationResponseEntity.getStatusCode());
         var responseEntity =
-                restTemplate.postForEntity(equationResponseEntity.getHeaders().getLocation()+"/solutions?x=6",
+                restTemplate.postForEntity(equationResponseEntity.getHeaders().getLocation() + "/solutions?x=6",
                         null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals("Solution does not fit the equation.", responseEntity.getBody());
@@ -110,7 +104,7 @@ public class EquationsIntegrationTest {
     @DirtiesContext
     public void testAddSolutionIfFits_InvalidEquation() {
         var responseEntity =
-                restTemplate.postForEntity(COMMON_PREFIX+"/-1/solutions?x=6",
+                restTemplate.postForEntity(COMMON_PREFIX + "/-1/solutions?x=6",
                         null, String.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }

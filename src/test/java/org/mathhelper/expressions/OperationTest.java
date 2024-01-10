@@ -2,8 +2,6 @@ package org.mathhelper.expressions;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mathhelper.expressions.Operation;
-import org.mathhelper.expressions.Polynomial;
 
 import java.util.HashMap;
 import java.util.Map;

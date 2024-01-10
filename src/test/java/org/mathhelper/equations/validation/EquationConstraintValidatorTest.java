@@ -5,7 +5,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mathhelper.equations.validation.EquationValidator;
 import org.mockito.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EquationConstraintValidatorTest {
 
     @Mock
-    private  ConstraintValidatorContext context;
+    private ConstraintValidatorContext context;
     @Mock
     private ConstraintValidatorContext.ConstraintViolationBuilder builder;
     @Captor

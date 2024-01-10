@@ -3,17 +3,17 @@ package org.mathhelper.equations.services;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mathhelper.equations.persistence.model.EquationFactory;
 import org.mathhelper.equations.persistence.EquationRepository;
+import org.mathhelper.equations.persistence.model.EquationFactory;
 import org.mathhelper.expressions.ExpressionUtils;
-import org.mathhelper.equations.services.EquationServiceImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class EquationServiceImplTest {
@@ -58,6 +58,7 @@ public class EquationServiceImplTest {
         var equation = equationFactory.createEquation("(6*x)/(x-1)=6");
         assertFalse(equationsService.doesXFit(equation, 1));
     }
+
     @Test
     public void addSolutionIfSatisfies_SolutionSatisfiesTest() {
         var equation = equationFactory.createEquation(("x - 4 = -2"));

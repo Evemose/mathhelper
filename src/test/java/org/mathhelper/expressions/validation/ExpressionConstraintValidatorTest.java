@@ -11,16 +11,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressionConstraintValidatorTest {
 
+    private final ExpressionValidator expressionConstraintValidator = new ExpressionValidator();
     @Mock
-    private  ConstraintValidatorContext context;
+    private ConstraintValidatorContext context;
     @Mock
     private ConstraintValidatorContext.ConstraintViolationBuilder builder;
     @Captor
     private ArgumentCaptor<String> messageCaptor;
-
     private AutoCloseable closeable;
-
-    private final ExpressionValidator expressionConstraintValidator = new ExpressionValidator();
 
     @BeforeEach
     public void setUpBeforeEach() {

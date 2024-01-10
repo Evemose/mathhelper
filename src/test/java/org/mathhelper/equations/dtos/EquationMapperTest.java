@@ -1,16 +1,7 @@
 package org.mathhelper.equations.dtos;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mathhelper.equations.dtos.CreateEquationDTO;
-import org.mathhelper.equations.dtos.EquationMapper;
-import org.mathhelper.equations.persistence.model.Equation;
 import org.mathhelper.equations.persistence.model.EquationFactory;
-import org.mathhelper.expressions.Polynomial;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,7 +10,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
 
 @SpringBootTest
 public class EquationMapperTest {
