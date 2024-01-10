@@ -1,5 +1,7 @@
 package org.mathhelper.equations.dtos;
 
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
@@ -11,12 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class EquationMapper {
-    protected EquationFactory equationFactory;
 
-    @Autowired
-    public void setEquationFactory(EquationFactory equationFactory) {
-        this.equationFactory = equationFactory;
-    }
+    @Setter(value = AccessLevel.PROTECTED, onMethod_ = @Autowired)
+    protected EquationFactory equationFactory;
 
     abstract public Equation toEquation(CreateEquationDTO createEquationDTO);
 
@@ -24,7 +23,7 @@ public abstract class EquationMapper {
     abstract public GetEquationDTO toGetDTO(Equation equation);
 
     @ObjectFactory
-    public Equation createEquation(EquationDTO equationDTO) {
+    protected Equation createEquation(EquationDTO equationDTO) {
         return equationFactory.createEquation(equationDTO.equation());
     }
 }
