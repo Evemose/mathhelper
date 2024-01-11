@@ -1,15 +1,22 @@
 package org.mathhelper.equations.services;
 
+import org.hibernate.sql.ast.tree.expression.Collation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mathhelper.equations.persistence.EquationRepository;
 import org.mathhelper.equations.persistence.model.EquationFactory;
 import org.mathhelper.expressions.ExpressionUtils;
+import org.mathhelper.expressions.Polynomial;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -20,20 +27,14 @@ public class EquationServiceImplTest {
 
     @InjectMocks
     private EquationServiceImpl equationsService;
-    @InjectMocks
-    private EquationFactory equationFactory;
-    @Mock
-    private ExpressionUtils expressionUtils;
+    private final EquationFactory equationFactory = new EquationFactory(new ExpressionUtils());
     @Mock
     private EquationRepository equationRepository;
-
     private AutoCloseable closeable;
 
     @BeforeEach
     public void setUp() {
         closeable = MockitoAnnotations.openMocks(this);
-        when(expressionUtils.parseExpression(anyString())).thenCallRealMethod();
-        when(expressionUtils.collapseOperations(any())).thenCallRealMethod();
     }
 
     @AfterEach
@@ -62,7 +63,7 @@ public class EquationServiceImplTest {
     @Test
     public void addSolutionIfSatisfies_SolutionSatisfiesTest() {
         var equation = equationFactory.createEquation(("x - 4 = -2"));
-        double x = 2.0;
+        var x = 2.0;
         equationsService.addSolutionIfFits(equation, x);
         assertThat(equation.getSolutions()).containsExactlyInAnyOrder(x);
         Mockito.verify(equationRepository).save(equation);

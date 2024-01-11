@@ -83,7 +83,7 @@ public class EquationSpecificationBuilder {
     public EquationSpecificationBuilder containsFragment(@NonNull String fragment) {
         specification =
                 specification.and((root, query, criteriaBuilder) ->
-                        criteriaBuilder.like(root.get("equation"), "%" + fragment + "%"));
+                        criteriaBuilder.like(root.get("equationString"), "%" + fragment + "%"));
         return this;
     }
 

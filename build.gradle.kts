@@ -1,8 +1,8 @@
 plugins {
-    `java-library`
-    `maven-publish`
+    java
+    id("org.springframework.boot") version "3.2.1"
+    id("io.spring.dependency-management") version "1.1.4"
 }
-
 repositories {
     mavenLocal()
     maven {
@@ -40,16 +40,14 @@ version = "0.0.1-SNAPSHOT"
 description = "mathhelper"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-    }
-}
-
-tasks.withType<JavaCompile>() {
+tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<Javadoc>() {
+tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

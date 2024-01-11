@@ -10,16 +10,17 @@ import java.util.regex.Pattern;
 
 @Component
 @Validated
+// TODO refactor
 public class ExpressionUtils {
 
     public Polynomial parseExpression(@Expression String expression) {
         expression = expression.replaceAll(" ", "");
-        var operations = initializeOperations(expression);
+        var operations = toOperations(expression);
         return Objects.requireNonNull(collapseOperations(operations));
     }
 
-    public Polynomial collapseOperations(Collection<Operation> operationCollection) {
-        var operations = new PriorityQueue<>(operationCollection.size(), getOperationsInexpressionComparator());
+    private Polynomial collapseOperations(Collection<Operation> operationCollection) {
+        var operations = new PriorityQueue<>(operationCollection.size(), getOperationsInExpressionComparator());
         operations.addAll(operationCollection);
         while (operations.size() > 1) {
             var operation = operations.poll();
@@ -39,9 +40,16 @@ public class ExpressionUtils {
         return Objects.requireNonNull(operations.poll()).getPolynomial();
     }
 
-    private PriorityQueue<Operation> initializeOperations(String expression) {
+    /**
+     * Converts a given expression into a PriorityQueue of Operation objects
+     * with getOperationsInExpressionComparator() return value as comparator method.
+     *
+     * @param expression the expression to convert
+     * @return a PriorityQueue of Operation objects representing the expression
+     */
+    private PriorityQueue<Operation> toOperations(String expression) {
         expression = '+' + expression;
-        var operations = new PriorityQueue<>(getOperationsInexpressionComparator());
+        var operations = new PriorityQueue<>(getOperationsInExpressionComparator());
         final var pattern = "[-+*/]-?(\\(+-?((\\d+(\\.\\d+)?)|x)((([-+*/]-?((\\d+(\\.\\d+)?)|x))\\)*)*\\)+)|((\\d+(\\.\\d+)?)|x))";
         var matcher = Pattern.compile(pattern).matcher(expression);
         Operation previousOperation = null;
@@ -77,7 +85,7 @@ public class ExpressionUtils {
     }
 
     @NonNull
-    private Comparator<Operation> getOperationsInexpressionComparator() {
+    private Comparator<Operation> getOperationsInExpressionComparator() {
         return (o1, o2) -> {
             var o1OperatorPriority = switch (o1.getOperator()) {
                 case NONE -> 3;

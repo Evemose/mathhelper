@@ -53,6 +53,7 @@ public class EquationsController {
 
     @PostMapping("/{id}/solutions")
     public ResponseEntity<?> addSolutionIfFits(@PathVariable Long id, @RequestParam double x) {
+        System.out.println("id = " + id);
         var equation = equationsService.findById(id);
         if (equation.isEmpty()) {
             return ResponseEntity.notFound().build();

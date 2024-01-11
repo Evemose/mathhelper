@@ -13,6 +13,7 @@ import java.util.function.BinaryOperator;
 @Data
 @Builder
 @Embeddable
+// TODO: replace Double with complex data type to support functions and complex numbers
 public class Polynomial implements Cloneable {
 
     @ElementCollection

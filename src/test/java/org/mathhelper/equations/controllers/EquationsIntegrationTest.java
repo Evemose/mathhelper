@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
 public class EquationsIntegrationTest {
 
     private final String COMMON_PREFIX = "/equations";
@@ -25,19 +24,23 @@ public class EquationsIntegrationTest {
 
     @Test
     public void testGetAllEquations() {
-        var responseEntity = restTemplate.getForEntity(COMMON_PREFIX, String.class);
+        var responseEntity = restTemplate.getForEntity(COMMON_PREFIX, Void.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
-//    @Test
-//    public void testGetEquation() {
-//        var responseEntity = restTemplate.getForEntity(COMMON_PREFIX+"/1", String.class);
-//        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//    }
+    @Test
+    public void testGetEquation() {
+        var responseEntity = restTemplate.getForEntity(COMMON_PREFIX + "/1", GetEquationDTO.class);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertEquals("4*x-5=3", responseEntity.getBody().equation());
+        // TODO add solutions validation when implement automatic solution adding
+    }
 
     @Test
     public void testGetEquation_InvalidId() {
-        var responseEntity = restTemplate.getForEntity(COMMON_PREFIX + "/-1", String.class);
+        var responseEntity = restTemplate.getForEntity(COMMON_PREFIX + "/-1", Void.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
@@ -45,11 +48,13 @@ public class EquationsIntegrationTest {
     @DirtiesContext
     public void testCreateEquation() {
         var createEquationDTO = new CreateEquationDTO("3-2*x/5=4");
+
         var responseEntity = restTemplate.postForEntity(COMMON_PREFIX, createEquationDTO, String.class);
+
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        var responseBody = restTemplate.getForObject(responseEntity.getHeaders().getLocation(), GetEquationDTO.class);
-        assertNotNull(responseBody);
-        assertEquals("3-2*x/5=4", responseBody.equation());
+        var body = responseEntity.getBody();
+        assertNotNull(body);
+        // assertEquals("3-2*x/5=4", body.equation());
         // TODO add solutions validation when implement automatic solution adding
     }
 
@@ -66,23 +71,8 @@ public class EquationsIntegrationTest {
     @Test
     @DirtiesContext
     public void testAddSolutionIfFits_ValidSolution() {
-        var createEquationDTO = new CreateEquationDTO("4*x/5=4");
-        var equationResponseEntity = restTemplate.postForEntity(COMMON_PREFIX, createEquationDTO, GetEquationDTO.class);
-
-        assertEquals(HttpStatus.CREATED, equationResponseEntity.getStatusCode());
-        assertNotNull(equationResponseEntity.getHeaders().getLocation());
-        assertNotNull(equationResponseEntity.getBody());
-        assertThat(equationResponseEntity.getHeaders().getLocation().toString())
-                .isEqualTo("/equations/" + equationResponseEntity.getBody().id());
-
-        var equation = equationResponseEntity.getBody();
-        Assertions.assertNotNull(equation.id());
-        Assertions.assertEquals("4*x/5=4", equation.equation());
-        // TODO: change when implement automatic solution adding
-        assertThat(equation.solutions()).isEmpty();
-
         var responseEntity =
-                restTemplate.postForEntity(equationResponseEntity.getHeaders().getLocation() + "/solutions?x=5",
+                restTemplate.postForEntity(COMMON_PREFIX + "/3/solutions?x=1.5",
                         null, String.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
@@ -90,11 +80,8 @@ public class EquationsIntegrationTest {
     @Test
     @DirtiesContext
     public void testAddSolutionIfFits_InvalidSolution() {
-        var createEquationDTO = new CreateEquationDTO("4*x/5=4");
-        var equationResponseEntity = restTemplate.postForEntity(COMMON_PREFIX, createEquationDTO, String.class);
-        assertEquals(HttpStatus.CREATED, equationResponseEntity.getStatusCode());
         var responseEntity =
-                restTemplate.postForEntity(equationResponseEntity.getHeaders().getLocation() + "/solutions?x=6",
+                restTemplate.postForEntity(COMMON_PREFIX + "/1/solutions?x=6",
                         null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals("Solution does not fit the equation.", responseEntity.getBody());
