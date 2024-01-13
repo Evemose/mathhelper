@@ -1,8 +1,9 @@
 plugins {
-    java
+    application
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.4"
 }
+
 repositories {
     mavenLocal()
     maven {
@@ -10,11 +11,6 @@ repositories {
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
-}
 
 dependencies {
     implementation(libs.org.springframework.boot.spring.boot.starter.data.jpa)
@@ -35,6 +31,13 @@ dependencies {
     compileOnly(libs.org.mapstruct.mapstruct.processor)
 }
 
+configurations {
+
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
+
 group = "org"
 version = "0.0.1-SNAPSHOT"
 description = "mathhelper"
@@ -51,3 +54,5 @@ tasks.withType<Javadoc> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+

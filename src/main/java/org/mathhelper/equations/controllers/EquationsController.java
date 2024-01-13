@@ -7,6 +7,7 @@ import org.mathhelper.equations.dtos.FilterEquationDTO;
 import org.mathhelper.equations.services.EquationService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,9 +36,8 @@ public class EquationsController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll(Pageable pageable,
-                                    FilterEquationDTO filter) {
-        System.out.println("filter = " + filter);
+    public ResponseEntity<?> getAll(FilterEquationDTO filter,
+                                    Pageable pageable) {
         return ResponseEntity.ok(
                 equationsService.findAll(filter, pageable)
                         .stream().map(equationMapper::toGetDTO));

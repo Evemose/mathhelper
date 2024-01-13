@@ -17,7 +17,7 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Equation {
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     final List<Double> solutions = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

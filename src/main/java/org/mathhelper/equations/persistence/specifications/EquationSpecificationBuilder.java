@@ -22,8 +22,8 @@ public class EquationSpecificationBuilder {
         return new EquationSpecificationBuilder()
                 .solutionsNumberBetween(filter.getMinSolutions(), filter.getMaxSolutions())
                 .containsSolutions(filter.getSolutions())
-                .anyOfTypes(filter.getEquationTypes())
-                .containsFragment(filter.getEquationFragment());
+                .anyOfTypes(filter.getTypes())
+                .containsFragment(filter.getFragment());
     }
 
     /**
@@ -37,7 +37,8 @@ public class EquationSpecificationBuilder {
         if (min > max) {
             throw new IllegalArgumentException("min must be less than or equal to max");
         }
-        specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.between(criteriaBuilder.size(root.get("solutions")), min, max));
+        specification = specification.and((root, query, criteriaBuilder) ->
+                criteriaBuilder.between(criteriaBuilder.size(root.get("solutions")), min, max));
         return this;
     }
 
